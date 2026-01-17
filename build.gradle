@@ -13,13 +13,13 @@ repositories {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(24)
     }
 }
 
 gradlePlugin {
     website = 'https://github.com/m-segreti/gradle-bun-plugin'
-    vcsUrl  = 'https://github.com/m-segreti/gradle-bun-plugin.git'
+    vcsUrl = 'https://github.com/m-segreti/gradle-bun-plugin.git'
 
     plugins {
         bunPlugin {
