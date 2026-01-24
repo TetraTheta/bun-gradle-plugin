@@ -1,4 +1,4 @@
-package net.nexus.gradle.plugin.bun;
+package io.gradle.m_segreti;
 
 import java.util.Locale;
 

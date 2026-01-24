@@ -1,4 +1,4 @@
-package net.nexus.gradle.plugin.bun;
+package io.gradle.m_segreti;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;

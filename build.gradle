@@ -4,8 +4,8 @@ plugins {
     id 'com.gradle.plugin-publish' version '2.0.0'
 }
 
-group = 'net.nexus'
-version = '0.0.2'
+group = 'io.gradle.m-segreti'
+version = '0.0.3'
 
 repositories {
     mavenCentral()
@@ -19,16 +19,15 @@ java {
 
 gradlePlugin {
     website = 'https://github.com/m-segreti/gradle-bun-plugin'
-    vcsUrl = 'https://github.com/m-segreti/gradle-bun-plugin.git'
+    vcsUrl = 'https://github.com/m-segreti/gradle-bun-plugin'
 
     plugins {
-        bunPlugin {
-            id = 'net.nexus.gradle.plugin.bun'
-            implementationClass = 'net.nexus.gradle.plugin.bun.BunPlugin'
+        create("BunPlugin") {
+            id = "io.gradle.m-segreti.BunPlugin"
+            implementationClass = "io.gradle.m-segreti.BunPlugin"
             displayName = 'Bun Plugin'
             description = 'Downloads and makes Bun tasks (install/test/run/add) available via Gradle'
-
-            tags.set(['bun', 'javascript', 'tooling', 'frontend', 'build'])
+            tags.set(["bun", "javascript", "tooling", "frontend", "build"])
         }
     }
 }
