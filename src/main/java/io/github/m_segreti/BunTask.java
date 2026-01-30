@@ -140,6 +140,13 @@ public abstract class BunTask extends Exec {
 
         setExecutable(bunExecutable.getAbsolutePath());
         super.setArgs(bunArgs);
+        
+        // Add Bun to PATH for child processes
+        final String bunDir = bunExecutable.getParentFile().getAbsolutePath();
+        final String currentPath = System.getenv("PATH");
+        final String pathSeparator = System.getProperty("path.separator");
+        environment("PATH", bunDir + pathSeparator + currentPath);
+        
         super.exec();
     }
 }
