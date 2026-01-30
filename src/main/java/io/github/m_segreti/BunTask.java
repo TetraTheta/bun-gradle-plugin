@@ -138,15 +138,8 @@ public abstract class BunTask extends Exec {
         getLogger().lifecycle("Bun executable: [{}]", bunExecutable.getAbsolutePath());
         getLogger().lifecycle("Bun arguments : {}", bunArgs);
 
-        // Add Bun to PATH for child processes - Bun itself adds its directory to PATH
-        // when running, which allows tools like Next.js to spawn bun subprocesses
-        final String bunDir = bunExecutable.getParentFile().getAbsolutePath();
-        final String currentPath = System.getenv("PATH");
-        final String pathSeparator = System.getProperty("path.separator");
-        environment("PATH", bunDir + pathSeparator + currentPath);
-
         setExecutable(bunExecutable.getAbsolutePath());
-        setArgs(bunArgs);
+        super.setArgs(bunArgs);
         super.exec();
     }
 }
