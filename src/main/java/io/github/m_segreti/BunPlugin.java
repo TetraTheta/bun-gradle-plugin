@@ -69,11 +69,14 @@ public class BunPlugin implements Plugin<Project> {
         // Resolve configured system with an auto-detect fallback
         final Provider<BunSystem> system = extension.getSystem().orElse(project.provider(BunSystem::detect));
 
+        // Resolve SSL verification setting with a default of true
+        final Provider<Boolean> disableSslVerification = extension.getDisableSslVerification().orElse(true);
+
         // Root folder under the project where Bun artifacts are stored
         final File bunRoot = project.getProjectDir().toPath().resolve(".gradle/bun").toFile();
 
         // Task that ensures Bun is installed locally
-        final TaskProvider<BunSetupTask> bunSetup = this.registerBunSetup(project, system, version);
+        final TaskProvider<BunSetupTask> bunSetup = this.registerBunSetup(project, system, version, disableSslVerification);
 
         // Computes the Bun installation directory
         final Provider<File> installDirProvider = project.provider(() -> {
@@ -173,12 +176,14 @@ public class BunPlugin implements Plugin<Project> {
 
     private TaskProvider<BunSetupTask> registerBunSetup(final Project project,
                                                         final Provider<BunSystem> system,
-                                                        final Provider<String> version) {
+                                                        final Provider<String> version,
+                                                        final Provider<Boolean> disableSslVerification) {
         return project.getTasks().register("bunSetup", BunSetupTask.class, task -> {
             task.setGroup("bun");
             task.setDescription("Downloads and installs the configured Bun runtime into .gradle/bun for this project.");
             task.getVersion().set(version);
             task.getSystem().set(system);
+            task.getDisableSslVerification().set(disableSslVerification);
             task.getBunRootDir().set(project.getLayout().getProjectDirectory().dir(".gradle/bun"));
         });
     }

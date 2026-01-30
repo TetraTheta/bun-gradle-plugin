@@ -7,12 +7,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import javax.net.ssl.*;
 
 /**
  * Utility helpers used by the Bun Gradle plugin for downloading, verifying, extracting,
@@ -120,10 +122,14 @@ public class BunHelpers {
      *
      * @param url         the URL to download
      * @param destination the destination file to write (will be overwritten if it exists)
+     * @param disableSslVerification whether to disable SSL certificate verification
      * @throws IOException if the download fails or the destination cannot be written
      */
-    public static void downloadUrlTo(final URL url, final File destination) throws IOException {
+    public static void downloadUrlTo(final URL url, final File destination, final boolean disableSslVerification) throws IOException {
         Files.createDirectories(destination.getParentFile().toPath());
+        if (disableSslVerification) {
+            disableSslVerification();
+        }
         writeStream(url.openStream(), destination);
     }
 
@@ -219,6 +225,24 @@ public class BunHelpers {
         }
 
         return Optional.empty();
+    }
+
+    private static void disableSslVerification() {
+        try {
+            TrustManager[] trustAll = new TrustManager[]{
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() { return null; }
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                }
+            };
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAll, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to disable SSL verification", e);
+        }
     }
 
     private static void writeStream(final InputStream source, final File destination) throws IOException {

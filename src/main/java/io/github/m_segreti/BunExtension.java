@@ -55,6 +55,16 @@ public abstract class BunExtension {
     public abstract Property<BunSystem> getSystem();
 
     /**
+     * Whether to disable SSL certificate verification during downloads.
+     * <p>
+     * This is useful in corporate environments with SSL-intercepting proxies.
+     * Defaults to false.
+     *
+     * @return a Gradle {@link Property} representing whether SSL verification is disabled
+     */
+    public abstract Property<Boolean> getDisableSslVerification();
+
+    /**
      * Constructs the Bun extension.
      * <p>
      * Defaults are intentionally not applied here so users can explicitly

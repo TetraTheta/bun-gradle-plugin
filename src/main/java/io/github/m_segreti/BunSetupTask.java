@@ -71,6 +71,16 @@ public abstract class BunSetupTask extends DefaultTask {
     public abstract Property<BunSystem> getSystem();
 
     /**
+     * Whether to disable SSL certificate verification during downloads.
+     * <p>
+     * Useful in corporate environments with SSL-intercepting proxies.
+     *
+     * @return a property representing whether SSL verification is disabled
+     */
+    @Input
+    public abstract Property<Boolean> getDisableSslVerification();
+
+    /**
      * Root directory where Bun installations are stored.
      * <p>
      * Each installed version/system combination will be placed under a subdirectory
@@ -115,7 +125,7 @@ public abstract class BunSetupTask extends DefaultTask {
             return;
         }
 
-        final File zipFile = this.getZipFile(installDir, system, version);
+        final File zipFile = this.getZipFile(installDir, system, version, getDisableSslVerification().get());
 
         getLogger().lifecycle("Extracting {} -> {}", zipFile.getName(), installDir.getAbsolutePath());
         BunHelpers.unzip(zipFile, installDir);
@@ -148,10 +158,11 @@ public abstract class BunSetupTask extends DefaultTask {
      * @param installDir the directory where Bun will be installed
      * @param system     the target system/platform
      * @param version    the Bun version
+     * @param disableSslVerification whether to disable SSL verification
      * @return the verified Bun zip file
      * @throws IOException if the zip cannot be downloaded or written
      */
-    private File getZipFile(final File installDir, final BunSystem system, final String version) throws IOException {
+    private File getZipFile(final File installDir, final BunSystem system, final String version, final boolean disableSslVerification) throws IOException {
         Files.createDirectories(installDir.toPath());
 
         final File zipFile = new File(installDir, system.zipName());
@@ -160,7 +171,7 @@ public abstract class BunSetupTask extends DefaultTask {
         // If the zip does not exist already, download it
         if (!zipFile.exists()) {
             getLogger().lifecycle("Downloading Bun: {} -> {}", downloadUrl, zipFile.getAbsolutePath());
-            BunHelpers.downloadUrlTo(downloadUrl.toURL(), zipFile);
+            BunHelpers.downloadUrlTo(downloadUrl.toURL(), zipFile, disableSslVerification);
         } else {
             getLogger().lifecycle("Bun zip already present: {}", zipFile.getAbsolutePath());
         }
