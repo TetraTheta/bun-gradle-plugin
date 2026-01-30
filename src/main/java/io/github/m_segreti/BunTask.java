@@ -2,6 +2,7 @@ package io.github.m_segreti;
 
 import org.gradle.api.tasks.Exec;
 import org.gradle.api.tasks.Internal;
+import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -88,6 +89,25 @@ public abstract class BunTask extends Exec {
     }
 
     /**
+     * Sets the command-line arguments to be passed to Bun.
+     * <p>
+     * This overrides the parent {@link Exec#setArgs(List)} to ensure
+     * arguments are captured in the bunArgs list.
+     *
+     * @param args the arguments to pass to Bun
+     */
+    @Override
+    public BunTask setArgs(List<String> args) {
+        bunArgs.clear();
+
+        if (args != null) {
+            bunArgs.addAll(args);
+        }
+
+        return this;
+    }
+
+    /**
      * Executes the Bun command.
      * <p>
      * This method:
@@ -115,6 +135,9 @@ public abstract class BunTask extends Exec {
                 throw new IllegalStateException("bunExecutable not set (did you dependOn bunSetup?)");
             }
         }
+
+        getLogger().info("Bun executable: [{}]", bunExecutable.getAbsolutePath());
+        getLogger().info("Bun arguments : {}", bunArgs);
 
         setExecutable(bunExecutable.getAbsolutePath());
         super.setArgs(bunArgs);
