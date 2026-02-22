@@ -1,13 +1,45 @@
 # Bun Gradle Plugin
 
+This is forked version of [m-segreti/gradle-bun-plugin](https://github.com/m-segreti/gradle-bun-plugin).
+
+## Usage
+
+Put this in `settings.gradle`. This Gradle plugin is not yet published to Gradle Plugin Portal, so this is mandatory step to use this plugin.
+
+```gradle
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    maven { url 'https://jitpack.io' }
+  }
+  resolutionStrategy {
+    eachPlugin {
+      if (requested.id.id == 'io.github.tetratheta.bun') {
+        useModule("com.github.TetraTheta.bun-gradle-plugin:io.github.tetratheta.bun.gradle.plugin:${requested.version}")
+      }
+    }
+  }
+}
+```
+
+After that, use this in `build.gradle`.
+
+```gradle
+plugins {
+  id 'io.github.tetratheta.bun' version '0.0.22'
+}
+```
+
+***
+
+# Bun Gradle Plugin
+
 A Gradle plugin that install a portable installation of the Bun JavaScript runtime.
 
 This plugin is designed for build automation and CI usage, avoiding any
 dependency on a global/system installations of Bun.
 
 https://plugins.gradle.org/u/msegreti4355
-
----
 
 ## Features
 
@@ -19,8 +51,6 @@ https://plugins.gradle.org/u/msegreti4355
 - Configurable Bun version and platform
 - CI-friendly and reproducible builds
 
----
-
 ## Installation
 
 In your project's `build.gradle` reference the plugin:
@@ -30,8 +60,6 @@ plugins {
     id "io.github.m-segreti" version "x.y.z"
 }
 ```
-
----
 
 ## Configuration
 
@@ -46,8 +74,6 @@ bun {
 
 Defaults are intentionally applied during plugin wiring so users may
 explicitly leave values unset.
-
----
 
 ## Tasks
 
@@ -101,8 +127,6 @@ Manually configurable (via BunSystem):
 - Baseline builds
 - musl-based Linux (e.g. Alpine)
 
----
-
 ## Design Philosophy
 
 - No global state - Bun is installed per project and isolated
@@ -110,15 +134,11 @@ Manually configurable (via BunSystem):
 - Explicit verification - corrupted downloads are detected and deleted
 - Gradle-native - uses Providers, task inputs/outputs, and idiomatic APIs
 
----
-
 ## Roadmap
 
 - Additional Bun commands (build, dev, etc.)
 - Configuration cache optimizations
 - Proper Unix permission handling (chmod +x)
-
----
 
 ## License
 

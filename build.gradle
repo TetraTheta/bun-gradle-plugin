@@ -1,33 +1,32 @@
 plugins {
-    id 'java-gradle-plugin'
-    id 'maven-publish'
-    id 'com.gradle.plugin-publish' version '2.0.0'
+  id 'java-gradle-plugin'
+  id 'maven-publish'
+  //id 'com.gradle.plugin-publish' version '2.0.0'
 }
 
-group = 'io.github.m-segreti'
-version = '0.0.15'
+group = 'io.github.tetratheta'
+version = '0.0.22-SNAPSHOT'
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(24)
-    }
+  sourceCompatibility = JavaLanguageVersion.of(17)
+  targetCompatibility = JavaLanguageVersion.of(17)
 }
 
 gradlePlugin {
-    website = 'https://github.com/m-segreti/gradle-bun-plugin'
-    vcsUrl = 'https://github.com/m-segreti/gradle-bun-plugin'
+  website = 'https://github.com/TetraTheta/gradle-bun-plugin'
+  vcsUrl = 'https://github.com/TetraTheta/gradle-bun-plugin'
 
-    plugins {
-        create("BunPlugin") {
-            id = "io.github.m-segreti.bun"
-            implementationClass = "io.github.m_segreti.BunPlugin"
-            displayName = 'Bun Plugin'
-            description = 'Downloads and makes Bun tasks (install/test/run/add) available via Gradle'
-            tags.set(["bun", "javascript", "tooling", "frontend", "build"])
-        }
+  plugins {
+    create("BunPlugin") {
+      id = "io.github.tetratheta.bun"
+      implementationClass = "io.github.tetratheta.BunPlugin"
+      displayName = 'Bun Plugin'
+      description = 'Downloads and makes Bun tasks (install/test/run/add) available via Gradle'
+      tags.set(["bun", "javascript", "tooling", "frontend", "build"])
     }
+  }
 }
