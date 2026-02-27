@@ -1,4 +1,4 @@
-package io.github.tetratheta;
+package io.github.tetratheta.bun;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;

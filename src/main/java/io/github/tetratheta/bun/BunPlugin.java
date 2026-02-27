@@ -1,4 +1,4 @@
-package io.github.tetratheta;
+package io.github.tetratheta.bun;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -141,11 +141,11 @@ public class BunPlugin implements Plugin<Project> {
 
     task.setGroup("bun");
     task.dependsOn("bunSetup");
-    task.setWorkingDir(project.getProjectDir());
     task.getBunExecutableProperty().set(project.getLayout().getProjectDirectory().file(exe.map(File::getAbsolutePath)));
     task.getBunRootDir().set(root);
-    task.getVersion().set(v);
-    task.getSystem().set(s);
     task.getForceBun().convention(ext.getForceBun().getOrElse(false));
+    task.getSystem().set(s);
+    task.getVersion().set(v);
+    task.getWorkingDirProperty().convention(ext.getWorkingDir().getOrElse(project.getLayout().getProjectDirectory()));
   }
 }

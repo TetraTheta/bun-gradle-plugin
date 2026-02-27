@@ -1,11 +1,13 @@
 plugins {
   id 'java-gradle-plugin'
   id 'maven-publish'
-  //id 'com.gradle.plugin-publish' version '2.0.0'
+  id 'org.jreleaser' version '1.22.0'
 }
 
 group = 'io.github.tetratheta'
-version = '0.0.22-SNAPSHOT'
+version = '0.0.1-SNAPSHOT'
+
+def repoUrl = 'https://github.com/TetraTheta/gradle-bun-plugin'
 
 repositories {
   mavenCentral()
@@ -14,19 +16,88 @@ repositories {
 java {
   sourceCompatibility = JavaLanguageVersion.of(17)
   targetCompatibility = JavaLanguageVersion.of(17)
+
+  withSourcesJar()
+  withJavadocJar()
 }
 
 gradlePlugin {
-  website = 'https://github.com/TetraTheta/gradle-bun-plugin'
-  vcsUrl = 'https://github.com/TetraTheta/gradle-bun-plugin'
-
+  website = repoUrl
+  vcsUrl = repoUrl
   plugins {
     create("BunPlugin") {
       id = "io.github.tetratheta.bun"
-      implementationClass = "io.github.tetratheta.BunPlugin"
+      implementationClass = "io.github.tetratheta.bun.BunPlugin"
       displayName = 'Bun Plugin'
       description = 'Downloads and makes Bun tasks (install/test/run/add) available via Gradle'
       tags.set(["bun", "javascript", "tooling", "frontend", "build"])
+    }
+  }
+}
+
+publishing {
+  publications {
+    withType(MavenPublication).configureEach {
+      pom {
+        name = rootProject.name
+        description = 'Gradle plugin that exposes some Bun tasks'
+        url = repoUrl
+
+        licenses{
+          license {
+            name = 'MIT License'
+            url = 'http://www.opensource.org/licenses/mit-license.php'
+          }
+        }
+        developers {
+          developer {
+            id = 'tetratheta'
+            name = 'TetraTheta'
+            email = '37061801+TetraTheta@users.noreply.github.com'
+          }
+        }
+        scm {
+          connection = 'scm:git:git://github.com/TetraTheta/gradle-bun-plugin.git'
+          developerConnection = 'scm:git:ssh://git@github.com:TetraTheta/gradle-bun-plugin.git'
+          url = repoUrl
+        }
+      }
+    }
+  }
+  repositories {
+    maven {
+      url = layout.buildDirectory.dir('staging-deploy')
+    }
+  }
+}
+
+jreleaser {
+  signing {
+    pgp {
+      active = 'ALWAYS'
+      armored = true
+    }
+  }
+  deploy {
+    maven {
+      mavenCentral {
+        sonatype {
+          active = 'RELEASE'
+          url = 'https://central.sonatype.com/api/v1/publisher'
+          stagingRepository('build/staging-deploy')
+        }
+      }
+      nexus2 {
+        'maven-central' {
+          active = 'SNAPSHOT'
+          snapshotUrl = 'https://central.sonatype.com/repository/maven-snapshots/'
+          applyMavenCentralRules = true
+          snapshotSupported = true
+          closeRepository = true
+          releaseRepository = false
+          stagingRepository('build/staging-deploy')
+        }
+      }
     }
   }
 }

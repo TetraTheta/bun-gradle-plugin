@@ -1,4 +1,4 @@
-package io.github.tetratheta;
+package io.github.tetratheta.bun;
 
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
@@ -102,7 +102,7 @@ public abstract class BunTask extends Exec {
     }
 
     final String newPath = bunDir + File.pathSeparator + existingPath;
-    getLogger().lifecycle("Updated PATH: {}", newPath);
+    // getLogger().lifecycle("Updated PATH: {}", newPath);
 
     environment(pathKey, newPath);
 
@@ -111,6 +111,10 @@ public abstract class BunTask extends Exec {
 
     setExecutable(resolved.getAbsolutePath());
     super.setArgs(finalArgs);
+
+    if (getWorkingDirProperty().isPresent()) {
+      this.setWorkingDir(getWorkingDirProperty().get().getAsFile());
+    }
 
     super.exec();
   }
@@ -162,6 +166,9 @@ public abstract class BunTask extends Exec {
 
   @Input
   public abstract Property<Boolean> getForceBun();
+
+  @Internal
+  public abstract DirectoryProperty getWorkingDirProperty();
 
   /// Sets the command-line arguments to be passed to Bun.
   ///

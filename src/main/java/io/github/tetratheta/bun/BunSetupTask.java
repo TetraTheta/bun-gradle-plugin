@@ -1,4 +1,4 @@
-package io.github.tetratheta;
+package io.github.tetratheta.bun;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
