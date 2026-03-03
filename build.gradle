@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'io.github.tetratheta'
-version = '0.0.1'
+version = '0.0.2-SNAPSHOT'
 
 def repoUrl = 'https://github.com/TetraTheta/gradle-bun-plugin'
 
