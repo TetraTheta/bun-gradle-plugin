@@ -4,33 +4,50 @@ This is forked version of [m-segreti/gradle-bun-plugin](https://github.com/m-seg
 
 ## Usage
 
-Put this in `settings.gradle`. This Gradle plugin is not yet published to Gradle Plugin Portal, so this is mandatory step to use this plugin.
+This Gradle plugin has not been published to Gradle Plugin Portal. So, you must add these lines to use this plugin in your project.
+
+### settings.gradle
 
 ```gradle
+// 'pluginManagement' must be placed at the top of the 'settings.gradle'
 pluginManagement {
   repositories {
     gradlePluginPortal()
-    maven { url 'https://jitpack.io' }
-  }
-  resolutionStrategy {
-    eachPlugin {
-      if (requested.id.id == 'io.github.tetratheta.bun') {
-        useModule("com.github.TetraTheta.bun-gradle-plugin:io.github.tetratheta.bun.gradle.plugin:${requested.version}")
-      }
-    }
+    mavenCentral()
+    maven { url 'https://central.sonatype.com/repository/maven-snapshots' }
   }
 }
+
+// other things
+rootProject.name = '<your-project-name>'
 ```
 
-After that, use this in `build.gradle`.
+### build.gradle
 
 ```gradle
 plugins {
-  id 'io.github.tetratheta.bun' version '0.0.22'
+  id 'io.github.tetratheta.bun' version '0.0.1'
+}
+```
+### Configuration
+
+Configure Bun using the bun extension:
+
+```
+bun {
+  forceBun = false                       // Optional, defaults to "false"
+  system = BunSystem.LINUX_X64           // Optional, auto-detected by default
+  version = "1.1.0"                      // Optional, defaults to "latest"
+  workingDir = "path/to/bun/project_dir" // Optional, defaults to project directory
 }
 ```
 
 ***
+
+Here is README from original project. Most of them still applies.
+
+<details>
+<summary>Original README</summary>
 
 # Bun Gradle Plugin
 
@@ -139,6 +156,11 @@ Manually configurable (via BunSystem):
 - Additional Bun commands (build, dev, etc.)
 - Configuration cache optimizations
 - Proper Unix permission handling (chmod +x)
+
+
+</details>
+
+
 
 ## License
 
