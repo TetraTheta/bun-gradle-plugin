@@ -157,10 +157,7 @@ Manually configurable (via BunSystem):
 - Configuration cache optimizations
 - Proper Unix permission handling (chmod +x)
 
-
 </details>
-
-
 
 ## License
 
