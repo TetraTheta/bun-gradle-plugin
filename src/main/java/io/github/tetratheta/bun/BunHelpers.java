@@ -1,4 +1,4 @@
-package io.github.tetratheta;
+package io.github.tetratheta.bun;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -54,9 +54,7 @@ public class BunHelpers {
   /// @param sys     the target system/platform descriptor used to choose the correct asset name
   /// @return the download URI for the Bun zip asset
   public static URI bunZipUrl(final String version, final BunSystem sys) {
-    final String url = LATEST.equals(version)
-        ? "https://github.com/oven-sh/bun/releases/latest/download/" + sys.zipName()
-        : "https://github.com/oven-sh/bun/releases/download/bun-v" + version + "/" + sys.zipName();
+    final String url = LATEST.equals(version) ? "https://github.com/oven-sh/bun/releases/latest/download/" + sys.zipName() : "https://github.com/oven-sh/bun/releases/download/bun-v" + version + "/" + sys.zipName();
 
     return URI.create(url);
   }
@@ -79,15 +77,13 @@ public class BunHelpers {
 
   private static void disableSslVerification() {
     try {
-      TrustManager[] trustAll = new TrustManager[]{
-          new X509TrustManager() {
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+      TrustManager[] trustAll = new TrustManager[]{new X509TrustManager() {
+        public void checkClientTrusted(X509Certificate[] certs, String authType) {}
 
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+        public void checkServerTrusted(X509Certificate[] certs, String authType) {}
 
-            public X509Certificate[] getAcceptedIssuers() {return null;}
-          }
-      };
+        public X509Certificate[] getAcceptedIssuers() {return null;}
+      }};
       SSLContext sc = SSLContext.getInstance("SSL");
       sc.init(null, trustAll, new java.security.SecureRandom());
       HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
@@ -115,9 +111,7 @@ public class BunHelpers {
   /// @throws IOException           if the release page cannot be downloaded
   /// @throws IllegalStateException if the SHA-256 cannot be found for the given asset on the page
   public static String fetchExpectedSha256(final String version, final String assetZipName) throws IOException {
-    final String page = LATEST.equals(version)
-        ? "https://github.com/oven-sh/bun-releases-for-updater/releases/latest"
-        : "https://github.com/oven-sh/bun-releases-for-updater/releases/tag/bun-v" + version;
+    final String page = LATEST.equals(version) ? "https://github.com/oven-sh/bun-releases-for-updater/releases/latest" : "https://github.com/oven-sh/bun-releases-for-updater/releases/tag/bun-v" + version;
 
     final String html = readAll(URI.create(page).toURL());
     final Pattern shaPattern = Pattern.compile(Pattern.quote(assetZipName) + "[\\s\\S]{0,400}?sha256:\\s*([0-9a-fA-F]{64})");

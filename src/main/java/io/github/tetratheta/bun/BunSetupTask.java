@@ -1,4 +1,4 @@
-package io.github.tetratheta;
+package io.github.tetratheta.bun;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
@@ -72,10 +72,7 @@ public abstract class BunSetupTask extends DefaultTask {
     BunHelpers.unzip(zipFile, installDir);
     Files.deleteIfExists(zipFile.toPath());
 
-    final File executable = BunHelpers.findBunExecutable(installDir, system.exeName())
-        .orElseThrow(() -> new IllegalStateException(
-            "Failed to locate " + system.exeName() + " after extraction under: " + installDir
-        ));
+    final File executable = BunHelpers.findBunExecutable(installDir, system.exeName()).orElseThrow(() -> new IllegalStateException("Failed to locate " + system.exeName() + " after extraction under: " + installDir));
 
     if ("bun".equals(system.exeName())) {
       // Best-effort attempt to ensure executability on Unix-like systems.
@@ -163,25 +160,25 @@ public abstract class BunSetupTask extends DefaultTask {
   /// @param version the Bun version
   /// @throws IllegalStateException if verification fails or the hash cannot be computed
   private void verifyIntegrity(final File zipFile, final BunSystem system, final String version) {
-//     TODO This is borked
-//    try {
-//      final String expectedSha = BunHelpers.fetchExpectedSha256(version, system.zipName());
-//      final String actualSha = BunHelpers.sha256(zipFile);
-//
-//      if (!actualSha.equalsIgnoreCase(expectedSha)) {
-//        Files.delete(zipFile.toPath());
-//
-//        throw new IllegalStateException(
-//            "SHA-256 mismatch for " + system.zipName() +
-//                "\nExpected: " + expectedSha +
-//                "\nActual:   " + actualSha +
-//                "\nDeleted corrupted download."
-//        );
-//      }
-//    } catch (IOException | NoSuchAlgorithmException e) {
-//      throw new IllegalStateException(
-//          "Failed to verify integrity of " + zipFile.getAbsolutePath(), e
-//      );
-//    }
+    //     TODO This is borked
+    //    try {
+    //      final String expectedSha = BunHelpers.fetchExpectedSha256(version, system.zipName());
+    //      final String actualSha = BunHelpers.sha256(zipFile);
+    //
+    //      if (!actualSha.equalsIgnoreCase(expectedSha)) {
+    //        Files.delete(zipFile.toPath());
+    //
+    //        throw new IllegalStateException(
+    //            "SHA-256 mismatch for " + system.zipName() +
+    //                "\nExpected: " + expectedSha +
+    //                "\nActual:   " + actualSha +
+    //                "\nDeleted corrupted download."
+    //        );
+    //      }
+    //    } catch (IOException | NoSuchAlgorithmException e) {
+    //      throw new IllegalStateException(
+    //          "Failed to verify integrity of " + zipFile.getAbsolutePath(), e
+    //      );
+    //    }
   }
 }

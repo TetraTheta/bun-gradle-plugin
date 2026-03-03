@@ -1,4 +1,4 @@
-package io.github.tetratheta;
+package io.github.tetratheta.bun;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -51,11 +51,13 @@ public class BunPlugin implements Plugin<Project> {
     // Resolve configured version with a safe default. "latest" is treated as a valid value by this plugin
     final Provider<String> version = extension.getVersion().map(String::trim).orElse("latest");
 
-    // Resolve configured system with an auto-detect fallback
-    final Provider<BunSystem> system = extension.getSystem().orElse(project.provider(BunSystem::detect));
+    // Resolve configured system with an auto-detect fallback.
+    // A ValueSource is used so Gradle's Configuration Cache can track the OS/arch read
+    // as an external input rather than seeing it as a bare System.getProperty() call.
+    final Provider<BunSystem> system = extension.getSystem().orElse(project.getProviders().of(BunSystemDetector.class, spec -> {}));
 
-    // Resolve SSL verification setting with a default of true
-    final Provider<Boolean> disableSslVerification = extension.getDisableSslVerification().orElse(true);
+    // Resolve SSL verification setting with a default of false (verification enabled)
+    final Provider<Boolean> disableSslVerification = extension.getDisableSslVerification().orElse(false);
 
     // Root folder under the project where Bun artifacts are stored
     final Directory bunRoot = project.getLayout().getProjectDirectory().dir(".gradle/bun");
@@ -141,11 +143,11 @@ public class BunPlugin implements Plugin<Project> {
 
     task.setGroup("bun");
     task.dependsOn("bunSetup");
-    task.setWorkingDir(project.getProjectDir());
     task.getBunExecutableProperty().set(project.getLayout().getProjectDirectory().file(exe.map(File::getAbsolutePath)));
     task.getBunRootDir().set(root);
-    task.getVersion().set(v);
+    task.getForceBun().convention(ext.getForceBun().orElse(false));
     task.getSystem().set(s);
-    task.getForceBun().convention(ext.getForceBun().getOrElse(false));
+    task.getVersion().set(v);
+    task.getWorkingDirProperty().convention(ext.getWorkingDir().orElse(project.getLayout().getProjectDirectory()));
   }
 }

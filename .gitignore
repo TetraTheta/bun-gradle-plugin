@@ -392,7 +392,5 @@ gradle-app.setting
 # IDEA
 !.idea/**/externalDependencies.xml
 
-# frontend-gradle-plugin
-.frontend-gradle-plugin/
-node/
-src/main/resources/static/assets/
+# AI
+/.claude

@@ -1,5 +1,6 @@
-package io.github.tetratheta;
+package io.github.tetratheta.bun;
 
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 
@@ -70,4 +71,11 @@ public abstract class BunExtension {
   ///
   /// @return a Gradle [Property] representing the configured Bun version
   public abstract Property<String> getVersion();
+
+  /// The working directory for Bun tasks.
+  ///
+  /// Default is project root directory.
+  ///
+  /// @return a [DirectoryProperty] representing the configured working directory
+  public abstract DirectoryProperty getWorkingDir();
 }

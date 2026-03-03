@@ -1,4 +1,4 @@
-package io.github.tetratheta;
+package io.github.tetratheta.bun;
 
 import java.util.Locale;
 
@@ -70,8 +70,7 @@ public enum BunSystem {
   /// configuring the plugin.
   ///
   /// @return the detected [BunSystem]
-  /// @throws IllegalStateException if the current OS/architecture combination
-  ///                                                             is not supported by this plugin
+  /// @throws IllegalStateException if the current OS/architecture combination is not supported by this plugin
   public static BunSystem detect() {
     final String os = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
     final String arch = System.getProperty("os.arch", "").toLowerCase(Locale.ROOT);

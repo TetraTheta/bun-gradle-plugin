@@ -1,0 +1,47 @@
+name: Publish Snapshot
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Validate snapshot version
+        run: |
+          GRADLE_VERSION=$(grep '^version' build.gradle | sed "s/version *= *['\"]//;s/['\"].*//")
+          echo "Gradle version : $GRADLE_VERSION"
+          if ! echo "$GRADLE_VERSION" | grep -q '\-SNAPSHOT'; then
+            echo "ERROR: Snapshot workflow requires a version with -SNAPSHOT suffix, got: '$GRADLE_VERSION'"
+            exit 1
+          fi
+
+      - name: Publish to staging
+        run: ./gradlew publish
+
+      - name: Deploy to Maven Central Snapshots
+        run: ./gradlew jreleaserDeploy
+        env:
+          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          JRELEASER_NEXUS2_MAVEN_CENTRAL_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          JRELEASER_NEXUS2_MAVEN_CENTRAL_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
